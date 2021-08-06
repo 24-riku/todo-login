@@ -9,16 +9,28 @@ import { userState } from "./store/userState";
 import { todoTextState } from "./store/todoTextState";
 import { memo } from "react";
 
-export const Todos = memo(() => {
+export const TodosPage = memo(() => {
   const [todos, setTodos] = useRecoilState(userState);
 
   const [todoText, setTodoText] = useRecoilState(todoTextState);
 
-  const onClickComplete = (index: number) => {
-    const newTodos = [...todos];
-    newTodos[index].completed = true;
-    setTodos(newTodos);
+  const onClickChange = (index: number) => {
+    setTodos((todos) =>
+      todos.map((todo, i) => {
+        return {
+          userId: todo.userId,
+          id: todo.id,
+          title: todo.title,
+          completed: index === i ? !todo.completed : todo.completed
+        };
+      })
+    );
   };
+  // const onClickComplete = (index: number) => {
+  //   const newTodos = [...todos];
+  //   newTodos[index].completed = true;
+  //   setTodos(newTodos);
+  // };
 
   const onClickDelete = (index: number) => {
     const newTodos = [...todos];
@@ -43,11 +55,11 @@ export const Todos = memo(() => {
     setTodoText("");
   };
 
-  const onClickAgain = (index: number) => {
-    const newTodos = [...todos];
-    newTodos[index].completed = false;
-    setTodos(newTodos);
-  };
+  // const onClickAgain = (index: number) => {
+  //   const newTodos = [...todos];
+  //   newTodos[index].completed = false;
+  //   setTodos(newTodos);
+  // };
 
   return (
     <ChakraProvider>
@@ -59,10 +71,10 @@ export const Todos = memo(() => {
       />
       <IncompleteTodos
         todos={todos}
-        onClickComplete={onClickComplete}
+        onClickComplete={onClickChange}
         onClickDelete={onClickDelete}
       />
-      <CompletedTodos todos={todos} onClickAgain={onClickAgain} />
+      <CompletedTodos todos={todos} onClickAgain={onClickChange} />
     </ChakraProvider>
   );
 });
